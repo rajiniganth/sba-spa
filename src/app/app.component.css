@@ -1,0 +1,9 @@
+.router-link{
+	color: black;
+	font-weight: bold;
+}
+
+.router-link-active {
+	color: blue;
+	font-weight: bold;
+}

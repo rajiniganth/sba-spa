@@ -1,0 +1,135 @@
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()" novalidate>
+  <div class="row">
+    <div class="col-md-2 col-sm-2 ">
+      <label>Project:</label>
+    </div>
+    <div class="col-md-4 col-sm-4 ">
+      <div class="form-group">
+        <input formControlName="projectName" type="text" class="form-control" #prj>
+        <div *ngIf="showPrjSearch()">
+          <select class="form-control" formControlName="projectId" (change)="selectProject($event)">
+            <option *ngFor="let project of projects " [value]="project.projectId">
+              {{project.project}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-2 ">
+      <div class="form-group">
+        <button type="button" class="btn btn-secondary oval" (click)="projectSearch(prj)">Search</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-sm-2 ">
+      <label>Task:</label>
+    </div>
+    <div class="col-md-6 col-sm-6 ">
+      <div class="form-group">
+        <input [class.is-invalid]="taskName.invalid && taskName.touched" formControlName="task" type="text"
+          class="form-control">
+        <small [class.d-none]="taskName.valid || taskName.untouched" class="text-danger">Task Name is
+          required</small>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-3 offset-md-2 col-sm-3 offset-sm-2">
+        <div class="form-group">
+          <input type="checkbox" formControlName="parentFlag" (change)="onParentSelect($event)">
+          <span>&nbsp;Parent Task</span>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-sm-2 ">
+      <label>Priority:</label>
+    </div>
+    <div class="col-md-6 col-sm-6 ">
+      <div class="form-group">
+        <ng5-slider formControlName="priority" [options]="options"></ng5-slider>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-2 col-sm-2 ">
+        <label>Parent Task:</label>
+      </div>
+      <div class="col-md-4 col-sm-4 ">
+        <div class="form-group">
+          <input formControlName="parentTask" type="text" class="form-control" #pt>
+          <div *ngIf="showParentsSearch()">
+            <select class="form-control" formControlName="parentId" (change)="selectParent($event)">
+              <option *ngFor="let pt of parentTasks " [value]="pt.parentId">
+                {{pt.parentTask}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2 ">
+        <div class="form-group">
+          <button type="button" class="btn btn-secondary oval" (click)="parentSearch(pt)">Search</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="row">
+      <div class="col-md-2 col-sm-2 ">
+        <label>Start Date:</label>
+      </div>
+      <div class="col-md-2 col-sm-2 ">
+        <div class="form-group">
+          <input [class.is-invalid]="startDate.invalid && startDate.touched" formControlName="startDate" type="text"
+            class="form-control" name="startDate" placeholder="Start Date" ngbDatepicker #s="ngbDatepicker"
+            (focus)="s.open()" (ngModelChange)="updateEndDate($event)">
+          <small *ngIf="startDate.invalid && startDate.touched" class="text-danger">Invalid Start Date</small>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2 ">
+        <label>End Date:</label>
+      </div>
+      <div class="col-md-2 col-sm-2">
+        <div class="form-group">
+          <input [class.is-invalid]="taskForm.errors?.dateMismatch && endDate.touched" formControlName="endDate"
+            type="text" class="form-control" name="endDate" placeholder="End Date" ngbDatepicker #e="ngbDatepicker"
+            (focus)="e.open()">
+          <small *ngIf="taskForm.errors?.dateMismatch && endDate.touched" class="text-danger">Invalid End Date</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-sm-2 ">
+        <label>User:</label>
+      </div>
+      <div class="col-md-4 col-sm-4 ">
+        <div class="form-group">
+          <input formControlName="userName" type="text" class="form-control" #usr>
+          <div *ngIf="showUserSearch()">
+            <select class="form-control" formControlName="userId" (change)="selectUser($event)">
+              <option *ngFor="let user of users " [value]="user.userId">
+                {{user.firstName}}
+              </option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2 ">
+        <div class="form-group">
+          <button type="button" class="btn btn-secondary oval" (click)="userSearch(usr)">Search</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="row">
+    <div class="col-md-7 col-sm-7">
+      <button type="submit" class="btn btn-secondary float-right"><span>
+        {{ updateFlag ? 'Update ' : 'Add ' }}Task</span></button>&nbsp;
+    </div>
+    <div class="col-md-5 col-sm-5">
+      <button type="reset" class="btn btn-secondary" (click)="enableDefaults()" >Reset</button>
+    </div>
+  </div>
+</form>

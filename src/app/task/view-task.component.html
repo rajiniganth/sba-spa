@@ -1,0 +1,84 @@
+<form [formGroup]="viewTaskForm" novalidate>
+  <div class="row">
+    <div class="col-md-1 col-sm-1 ">
+      <label>Project:</label>
+    </div>
+    <div class="col-md-3 col-sm-3 ">
+      <div class="form-group">
+        <input formControlName="projectName" type="text" class="form-control" #prj>
+        <div *ngIf="showPrjSearch()">
+          <select class="form-control" formControlName="projectId" (change)="selectProject($event)">
+            <option *ngFor="let project of projects " [value]="project.projectId">
+              {{project.project}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <div class="form-group">
+        <button type="button" class="btn btn-secondary oval" (click)="projectSearch(prj)">Search</button>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-3 ">
+      &nbsp; &nbsp;Sort Task By:&nbsp;<button type="button" class="btn btn-secondary float-right"
+        (click)="sort('startDate')">Start Date</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('endDate')">End Date</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('priority')">Priority</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('status')">Completed</button>
+    </div>
+  </div>
+  <br>
+  <hr class="dashed">
+  <br>
+</form>
+<div *ngFor="let task of tasks | sort: sortField ">
+  <div class="row">
+    <div class="col-md-3 col-sm-3">
+      Task
+      <div class="form-group">
+        {{task.task}}
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-3">
+      Parent
+      <div class="form-group">
+        {{task.parentTask ? task.parentTask.parentTask : ''}}
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1">
+      Priority
+      <div class="form-group">
+        {{task.priority}}
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1">
+      Start
+      <div class="form-group">
+        {{task.startDate}}
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1">
+      End
+      <div class="form-group">
+        {{task.endDate}}
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1">
+      <div class="form-group">
+        <button type="button" class="btn btn-secondary" (click)="update(task)">Edit</button>
+      </div>
+    </div>
+    <div class="col-md-1 col-sm-1">
+      <div class="form-group">
+        <button type="button" class="btn btn-secondary" (click)="complete(task)">End Task</button>
+      </div>
+    </div>
+  </div>
+</div>

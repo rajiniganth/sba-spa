@@ -1,0 +1,188 @@
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="row">
+      <div class="col-md-1 col-sm-1 ">
+        <label>Project:</label>
+      </div>
+      <div class="col-md-6 col-sm-6 ">
+        <div class="form-group">
+          <input [class.is-invalid]="project.invalid && project.touched" formControlName="project" type="text"
+            class="form-control" name="firsName">
+          <small [class.d-none]="project.valid || project.untouched" class="text-danger">Project Name is
+            required</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 offset-md-1 col-sm-2 offset-sm-1">
+        <div class="form-group">
+          <input type="checkbox" formControlName="dateFlag" (change)="onDateSelect($event)">
+          <span>&nbsp;Set Start and End Date</span>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2">
+        <div class="form-group">
+          <input [class.is-invalid]="startDate.invalid && startDate.touched" formControlName="startDate" type="text"
+            class="form-control" name="startDate" placeholder="Start Date" ngbDatepicker #s="ngbDatepicker"
+            (focus)="s.open()" (ngModelChange)="updateEndDate($event)">
+          <small *ngIf="startDate.invalid && startDate.touched" class="text-danger">Invalid Start Date</small>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2">
+        <div class="form-group">
+          <input [class.is-invalid]="projectForm.errors?.dateMismatch && endDate.touched" formControlName="endDate"
+            type="text" class="form-control" name="endDate" placeholder="End Date" ngbDatepicker #e="ngbDatepicker"
+            (focus)="e.open()">
+          <small *ngIf="projectForm.errors?.dateMismatch && endDate.touched" class="text-danger">Invalid End Date</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-1 col-sm-1 ">
+        <label>Manager:</label>
+      </div>
+      <div class="col-md-4 col-sm-4 ">
+        <div class="form-group">
+          <input formControlName="managerName" type="text" class="form-control" #usr>
+          <div *ngIf="showSearch()">
+            <select class="form-control" formControlName="managerId" (change)="selectUser($event)">
+              <option *ngFor="let user of users " [value]="user.userId">
+                {{user.firstName}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-2 ">
+        <div class="form-group">
+          <button type="button" class="btn btn-secondary oval" (click)="userSearch(usr)">Search</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-1 col-sm-1 ">
+        <label>Priority:</label>
+      </div>
+      <div class="col-md-6 col-sm-6 ">
+        <div class="form-group">
+          <ng5-slider formControlName="priority" [options]="options"></ng5-slider>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        <button type="submit" class="btn btn-secondary float-right"><span>
+            {{ updateFlag ? 'Update' : 'Add' }}</span></button>&nbsp;
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <button type="reset" class="btn btn-secondary">Reset</button>
+      </div>
+    </div>
+  </form>
+  <hr color="blue">
+  <div class="row">
+    <div class="col-md-6 col-sm-6 ">
+      <div class="form-group">
+        <input class="form-control form-control-sm" placeholder="Search..." [(ngModel)]="searchText">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 col-sm-3 ">
+      Sort By:&nbsp;<button type="button" class="btn btn-secondary float-right" (click)="sort('startDate')">Start
+        Date</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('endDate')">End Date</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('priority')">Priority</button>
+    </div>
+    <div class="col-md-1 col-sm-1 ">
+      <button type="button" class="btn btn-secondary float-right" (click)="sort('status')">Completed</button>
+    </div>
+  </div>
+  <br>
+  <hr class="dashed">
+  <br>
+
+  <div *ngFor="let prj of projects | projectFilter: searchText | sort: sortField ">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  Project: {{prj.project}}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  No of Tasks: {{ prj.tasks ? prj.tasks.length: 0}}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  Status: {{prj.status}}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  Start Date: {{prj.startDate}}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  End Date: {{prj.endDate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="row">
+              <div class="col-md-3">
+                Priority
+              </div>
+            </div>
+            <div class="row">
+              &nbsp;
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  {{prj.priority}}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              &nbsp;
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button type="button" class="btn btn-secondary" (click)="update(prj)">Update</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button type="button" class="btn btn-secondary" (click)="suspend(prj)">Suspend</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <hr class="dashed">
+    <br>
+  </div>
